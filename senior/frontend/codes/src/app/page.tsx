@@ -67,7 +67,7 @@ export default function Home() {
         />
       </div>
 
-      <table border="1" style={{ marginTop: "20px" }}>
+      <table border={1} style={{ marginTop: "20px" }}>
         <thead>
           <tr>
             <th>ID</th>
