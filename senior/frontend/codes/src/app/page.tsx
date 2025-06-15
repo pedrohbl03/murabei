@@ -1,29 +1,29 @@
 "use client"
-
 import React, { useEffect, useState } from 'react';
+import { getBooksAllBooks } from '@/services/books.service';
+import { IBook } from '@/types/IBooks';
 
 export default function Home() {
 
-  const [nameFilter, setNameFilter] = useState("");
-  const [stateFilter, setStateFilter] = useState("");
-  const [docNumberFilter, setDocNumberFilter] = useState("");
-  const [documents, setDocuments] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [nameFilter, setNameFilter] = useState<string>("");
+  const [stateFilter, setStateFilter] = useState<string>("");
+  const [docNumberFilter, setDocNumberFilter] = useState<string>("");
+  const [documents, setDocuments] = useState<IBook[] | []>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:5000/api/v1/books');
-        if (!response.ok) throw new Error('Network response was not ok');
-        const data = await response.json();
+        const data = await getBooksAllBooks();
         setDocuments(data);
+        setLoading(false);
       } catch (err) {
-        setError(err.message);
-      } finally {
+        setError(err instanceof Error ? err.message : 'An unknown error occurred');
         setLoading(false);
       }
     };
+
 
     fetchData();
   }, []);

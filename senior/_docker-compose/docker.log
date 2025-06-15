@@ -1,3 +1,10 @@
-Attaching to backend-1
-backend-1  |  * Serving Flask app 'app'
-backend-1  |  * Debug mode: off
+Attaching to backend-1, frontend-1
+frontend-1  |   ▲ Next.js 14.2.25
+frontend-1  |   - Local:        http://243fb7f091d0:3000
+frontend-1  |   - Network:      http://172.18.0.2:3000
+frontend-1  | 
+frontend-1  |  ✓ Starting...
+frontend-1  |  ✓ Ready in 117ms
+backend-1   |  * Serving Flask app 'app'
+backend-1   |  * Debug mode: off
+

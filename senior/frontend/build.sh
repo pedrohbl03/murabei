@@ -1,2 +1,2 @@
 source version
-docker build -t frontend:latest .
+docker build  -f ./codes/Dockerfile -t frontend:latest .
