@@ -1,6 +1,6 @@
 FROM node:18-alpine AS builder
 
-WORKDIR /app/
+WORKDIR /app
 
 COPY */package*.json ./
 
@@ -13,7 +13,7 @@ RUN npm run build
 
 FROM node:18-alpine AS production
 
-WORKDIR /app/
+WORKDIR /app
 
 COPY --from=builder --chown=nextjs:nodejs /app/next.config.js ./
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public

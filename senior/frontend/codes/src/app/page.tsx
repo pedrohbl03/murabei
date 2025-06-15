@@ -15,8 +15,8 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getBooksAllBooks();
-        setDocuments(data);
+        const response = await getBooksAllBooks();
+        setDocuments(response.data);
         setLoading(false);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An unknown error occurred');
