@@ -25,7 +25,7 @@ export const BookList = ({ page, title, author, subject }: BookListProps) => {
     page: Number(page) || 1,
     limit: 10,
     title: title || '',
-    author: author || '',
+    author: author?.replace(/ /g, "_") || '',
     subject: subject || ''
   }));
 
@@ -73,14 +73,15 @@ export const BookList = ({ page, title, author, subject }: BookListProps) => {
         <TableBody>
           {books?.map((book, index) => (
             <TableRow key={book.id}
+              data-cy="book-item"
               className={cn(
                 'hover:bg-gray-100 transition-colors duration-200',
                 index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
               )}>
-              <TableCell>{book.id}</TableCell>
-              <TableCell>{book.author}</TableCell>
-              <TableCell>{book.title}</TableCell>
-              <TableCell>{book.biography}</TableCell>
+              <TableCell data-cy="book-id">{book.id}</TableCell>
+              <TableCell data-cy="book-author">{book.author}</TableCell>
+              <TableCell data-cy="book-title">{book.title}</TableCell>
+              <TableCell data-cy="book-biography">{book.biography}</TableCell>
             </TableRow>
           ))}
         </TableBody>

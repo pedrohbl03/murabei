@@ -16,12 +16,12 @@ export const BookTablePagination = ({
   return (
     <Pagination>
       <PaginationContent>
-        <PaginationItem>
+        <PaginationItem data-cy="previous-page">
           <CustomPageLink previous page={currentPage > 1 ? currentPage - 1 : currentPage} filterParams={filterParams} />
         </PaginationItem>
 
         {currentPage > 1 && (
-          <PaginationItem>
+          <PaginationItem data-cy="first-page">
             <CustomPageLink page={1} filterParams={filterParams}>1</CustomPageLink>
           </PaginationItem>
         )}
@@ -41,27 +41,27 @@ export const BookTablePagination = ({
         {Array.from({ length: 3 }, (_, i) => {
           const pageNumber = currentPage + i + 1;
           return pageNumber <= totalPages && pageNumber !== 1 ? (
-            <PaginationItem key={pageNumber} >
+            <PaginationItem key={pageNumber} data-cy={`page-${pageNumber}`}>
               <CustomPageLink page={pageNumber} filterParams={filterParams}>{pageNumber}</CustomPageLink>
             </PaginationItem>
           ) : null;
         })}
 
-        {currentPage < totalPages - 1 && (
+        {currentPage < totalPages - 1 && totalPages > 5 && (
           <PaginationItem>
             <PaginationEllipsis />
           </PaginationItem>
         )}
 
-        {currentPage < totalPages && currentPage + 5 > 5 && (
-          <PaginationItem>
+        {currentPage < totalPages && !(totalPages < 6) && (
+          <PaginationItem data-cy="last-page">
             <CustomPageLink page={totalPages} filterParams={filterParams}>
               {totalPages}
             </CustomPageLink>
           </PaginationItem>
         )}
 
-        <PaginationItem>
+        <PaginationItem data-cy="next-page">
           <CustomPageLink next page={currentPage < totalPages ? currentPage + 1 : currentPage} filterParams={filterParams} />
         </PaginationItem>
       </PaginationContent>
