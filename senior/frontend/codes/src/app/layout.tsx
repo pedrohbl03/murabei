@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "@/styles/globals.css";
+import { Container } from "@/components/Container";
 
 // Change it to Google Fonts.
 const geistSans = localFont({
@@ -30,7 +31,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <Container>
+          {children}
+        </Container>
       </body>
     </html>
   );

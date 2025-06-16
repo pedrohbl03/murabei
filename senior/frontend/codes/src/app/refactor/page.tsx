@@ -1,47 +1,93 @@
-import { Input, Button } from "@/components/ui";
-import { getBooksAllBooks } from "@/services/books.service";
+"use client"
+import React, { useEffect, useState } from 'react';
+import { getAllBooks } from '@/services/books.service';
+import { IBook } from '@/types/IBooks';
 
-export default async function RefactorPage() {
+export default function Home() {
 
-  const { data, error, success } = await getBooksAllBooks();
+  const [nameFilter, setNameFilter] = useState<string>("");
+  const [stateFilter, setStateFilter] = useState<string>("");
+  const [docNumberFilter, setDocNumberFilter] = useState<string>("");
+  const [documents, setDocuments] = useState<IBook[] | []>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!success && error) {
-    return <div>Erro ao buscar livros.</div>;
-  }
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getAllBooks();
+        console.log(response.data);
+        setDocuments(response.data.books);
+        setLoading(false);
+      } catch (err) {
+        console.log(err);
+        setError(err instanceof Error ? err.message : 'An unknown error occurred');
+        setLoading(false);
+      }
+    };
 
-  if (!data || data.length === 0) {
-    return <div>Nenhum livro encontrado.</div>;
-  }
+    fetchData();
+  }, []);
+
+  const filteredDocs = documents.filter((doc) => {
+    return (
+      doc?.author?.toLowerCase().includes(nameFilter.toLowerCase()) &&
+      doc?.title?.toLowerCase().includes(stateFilter.toLowerCase()) &&
+      doc?.biography?.toLowerCase().includes(docNumberFilter.toLowerCase())
+    );
+  });
+
+  if (loading) return <div>Loading documents...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
-    <>
-      <div style={{ padding: "20px" }}>
-        <h1>Document Finder</h1>
-        <div>
-          <label>Autor: </label>
-          <Input type="text" placeholder="Digite o autor" />
-        </div>
-        <div>
-          <label>Livro: </label>
-          <Input type="text" placeholder="Digite o título do livro" />
-        </div>
-        <div>
-          <label>Biografia: </label>
-          <Input type="text" placeholder="Digite a biografia" />
-        </div>
-        <Button>Buscar</Button>
+    <div style={{ padding: "20px" }}>
+      <h1>Document Finder</h1>
+      <div>
+        <label>Autor: </label>
+        <input
+          type="text"
+          value={nameFilter}
+          onChange={(e) => setNameFilter(e.target.value)}
+        />
+      </div>
+      <div>
+        <label>Livro: </label>
+        <input
+          type="text"
+          value={stateFilter}
+          onChange={(e) => setStateFilter(e.target.value)}
+        />
+      </div>
+      <div>
+        <label>Biografia: </label>
+        <input
+          type="text"
+          value={docNumberFilter}
+          onChange={(e) => setDocNumberFilter(e.target.value)}
+        />
       </div>
 
-      <div style={{ padding: "20px" }}>
-        <h2>Livros encontrados:</h2>
-        <ul>
-          {data.map((book) => (
-            <li key={book.id}>
-              <strong>{book.title}</strong> by {book.author} - {book.biography}
-            </li>
+      <table border={1} style={{ marginTop: "20px" }}>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Autor</th>
+            <th>Livro</th>
+            <th>Biografia</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredDocs.map((doc) => (
+            <tr key={doc.id}>
+              <td>{doc.id}</td>
+              <td>{doc.author}</td>
+              <td>{doc.title}</td>
+              <td>{doc.biography}</td>
+            </tr>
           ))}
-        </ul>
-      </div>
-    </>
+        </tbody>
+      </table>
+    </div>
   );
-}
+};

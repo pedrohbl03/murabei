@@ -1,93 +1,39 @@
-"use client"
-import React, { useEffect, useState } from 'react';
-import { getBooksAllBooks } from '@/services/books.service';
-import { IBook } from '@/types/IBooks';
+import { BookList } from "@/components/BookTable";
+import { Filter } from "@/components/Filter";
+import { PageProps } from "../../.next/types/app/page";
 
-export default function Home() {
+export default async function Page(props: PageProps) {
 
-  const [nameFilter, setNameFilter] = useState<string>("");
-  const [stateFilter, setStateFilter] = useState<string>("");
-  const [docNumberFilter, setDocNumberFilter] = useState<string>("");
-  const [documents, setDocuments] = useState<IBook[] | []>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await getBooksAllBooks();
-        setDocuments(response.data);
-        setLoading(false);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An unknown error occurred');
-        setLoading(false);
-      }
-    };
-
-
-    fetchData();
-  }, []);
-
-  const filteredDocs = documents.filter((doc) => {
-    return (
-      doc?.author?.toLowerCase().includes(nameFilter.toLowerCase()) &&
-      doc?.title?.toLowerCase().includes(stateFilter.toLowerCase()) &&
-      doc?.biography?.toLowerCase().includes(docNumberFilter.toLowerCase())
-    );
-  });
-
-  if (loading) return <div>Loading documents...</div>;
-  if (error) return <div>Error: {error}</div>;
+  console.log("Page props:", props.searchParams);
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Document Finder</h1>
-      <div>
-        <label>Autor: </label>
-        <input
-          type="text"
-          value={nameFilter}
-          onChange={(e) => setNameFilter(e.target.value)}
-        />
-      </div>
-      <div>
-        <label>Livro: </label>
-        <input
-          type="text"
-          value={stateFilter}
-          onChange={(e) => setStateFilter(e.target.value)}
-        />
-      </div>
-      <div>
-        <label>Biografia: </label>
-        <input
-          type="text"
-          value={docNumberFilter}
-          onChange={(e) => setDocNumberFilter(e.target.value)}
-        />
+    <>
+      <div className="mx-auto py-8">
+        <div className="flex flex-col items-center justify-center mb-8">
+          <h1 className="font-bold text-2xl">Procure seu livro</h1>
+          <p className="font-thin">Você pode procurar pelo seu livro preferido e até salvar o seus preferidos.</p>
+        </div>
+
+        <Filter.Root>
+          <Filter.Item
+            name="title"
+            label="Título"
+            placeholder="Digite o título do livro"
+          />
+          <Filter.Item
+            name="author"
+            label="Autor"
+            placeholder="Digite o nome do autor"
+          />
+          <Filter.Item
+            name="genre"
+            label="Gênero"
+            placeholder="Selecione o gênero do livro"
+          />
+        </Filter.Root>
       </div>
 
-      <table border={1} style={{ marginTop: "20px" }}>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Autor</th>
-            <th>Livro</th>
-            <th>Biografia</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredDocs.map((doc) => (
-            <tr key={doc.id}>
-              <td>{doc.id}</td>
-              <td>{doc.author}</td>
-              <td>{doc.title}</td>
-              <td>{doc.biography}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+      <BookList page={props.searchParams?.page} />
+    </>
   );
-};
-
+}
