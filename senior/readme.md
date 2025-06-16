@@ -1,85 +1,109 @@
-# Murabei test
+# Murabei FullStack Test
 
-## Description
+Este repositório contém uma aplicação fullstack composta por backend em Python (Flask) e frontend em Next.js, ambos orquestrados via Docker Compose. O objetivo é listar, filtrar livros, autores e assuntos, utilizando uma base SQLite3.
 
-Esse e o teste para Desenvolvedor FullStack na Murabei Data Science, usando Docker, Python, Nextjs and sqlite3.
+## Estrutura do Projeto
 
-O objetivo deste teste e avaliar a capcidade do desenvolvedor em criar uma aplicacao Frontend e integra-la em uma API Python. Toda a aplicacao e mantida em containers Docker, e roda usando docker compose. Esta e a mesma arquitetura usada em todos os projetos internos da Murabei.
+```
+senior/
+  _docker-compose/      # Arquivos de orquestração Docker
+  backend/              # API Flask + SQLite3
+  frontend/             # Aplicação Next.js
+```
 
-## Instrucoes
+## Tecnologias Utilizadas
 
-O repositorio e dividido em 3 pastas:
+- Python 3 + Flask
+- SQLite3
+- Next.js 13+ (React)
+- Docker & Docker Compose
+- Cypress (testes e2e)
+- shadcn/ui (componentes UI)
 
-- \_docker-compose
-- backend
-- frontend
+## Como rodar o projeto
 
-Na pasta **_\_docker-compose_**, estao os arquivos responsaveis por subir todas as imagens Docker. Um **docker-compose.yml**, que possui as informacoes de quais containers e imagens devem subir; um script **docker-up.bash** que sobe os containers baseado no arquivo **docker-compose.yml**; e um arquivo **docker.log**, que armazena todos os logs da aplicacao.
+1. **Clone o repositório**
+   ```sh
+   git clone <url-do-repo>
+   cd senior
+   ```
 
-Ja na pasta **_backend_** esta a API de livros, em Python Flask. Esta API tem uma gama de operacoes basicas, como listagem de livros, criacao, busca por autor e titulo. Esta API ja esta pre-pronta, mas pode ser alterada de acordo com a sua necessidade, sem problemas.
+2. **Build do backend**
+   ```sh
+   cd backend
+   bash build.bash
+   cd ..
+   ```
 
-Esta pasta possui um script **build.bash**, que builda a imagem docker a ser utilizada no **docker-compose.yml**.
+3. **Build do frontend**
+   ```sh
+   cd frontend
+   bash build.sh
+   cd ..
+   ```
 
-E, a pasta **_frontend_**, onde devem ser colocados codigos do FE. Aqui na Murabei, utilizamos o NextJS como framework de React, logo, seu FE deve ser desenolvido em NextJS, pelo menos, na versao 13, que ja possui **_Server Components_** e **_Server Actions_**.
+4. **Suba todos os serviços**
+   ```sh
+   cd _docker-compose
+   bash docker-up.bash
+   ```
 
-## Inicializacao
+5. **Acesse o frontend**
+   - Abra [http://localhost:3000](http://localhost:3000) no navegador.
 
-Clone o repositorio do Github, e va na pasta **_backend_**, e rode o script **_build.bash_**. Esse script ira buildar uma imagem docker local para o seu backend. Depois, va na pasta **_\_docker-compose_** e rode o script **_docker-up.bash_**, que ira subir o **docker-compose.yml**, subindo todos os servicos.
+## Desenvolvimento
 
-## Objetivos do Teste
+- O frontend está em [`frontend/codes`](frontend/codes), usando Next.js 14.
+- O backend está em [`backend/app.py`](backend/app.py).
+- O orquestrador está em [`_docker-compose/docker-compose.yml`](_docker-compose/docker-compose.yml).
 
-O objetivo deste teste e avaliar a capacidade do desenvolvedor em refatorar e ajustar uma codebase inicial. O teste possui uma base de dados em SQLite3, que possui dados de livros, autores, editores e etc. A aplicacao atual lista e retorna apenas poucos items.
+### Scripts úteis
 
-O desenvolvedor devera:
-- Refatorar o codigo;
-- Alterar o filtro para permitir que mais de um campo possa ser buscado ao mesmo tempo (concomitante);
-- Criar uma arquitetura de filtros que permite a inclusao de novo filtros ao longo do tempo e forma facil e segura;
+- Build do frontend: `frontend/build.sh`
+- Build do backend: `backend/build.bash`
+- Subir containers: `_docker-compose/docker-up.bash`
 
-O FE deve rodar junto com os outros servicos em docker, ou seja, deve ser adicionado um servico ao **docker-compose.yml** com o nome frontend. Para isso, o FE precisa de um **_Dockerfile_**, e de um script **_build.bash_**, como o servico da API.
+## Testes
 
-**IMPORTANTE**: ao rodar o **docker-compose.yml**, o FE deve subir junto com os outros servicos.
+- Testes end-to-end com Cypress: veja [`frontend/codes/cypress.config.ts`](frontend/codes/cypress.config.ts).
+- Para rodar os testes:
+  ```sh
+  cd frontend/codes
+  npx cypress open
+  ```
 
-## Avaliacao
+## Funcionalidades
 
-Aqui vao os pontos que sera avaliados no teste:
+- Listagem de livros, autores e editoras
+- Filtros acumulativos e independentes (ex: título + editora)
+- Componentes reutilizáveis com shadcn/ui
+- Gerenciamento de estado escalável
+- Debounce nos filtros para performance
+- Tratamento de estados vazios
 
-**_Obrigatorios_**
+## Critérios Técnicos
 
-**_Funcionais_**
-- O FE deve possuir uma imagem docker, e rodar junto com os outros servicos no **_docker-compose.yml_** (1 ponto)
-- Os filtros deverao estar funcionais, filtrando por cada campo individualmente (1 ponto)
-- Os filtros poderao ser acumulados, ou seja, ao buscar por titulo E editora, o resultado sera a combinacao dos campos (2 pontos)
-- As telas devem ser feitas usando componentes da biblioteca [shadcn/ui](https://ui.shadcn.com/) (1 ponto)
-- Estados vazios tratados (sem resultados, filtros parciais). (1 pt)
-- Performance: Filtros com debounce para evitar chamadas excessivas à API. (Bônus 1 pt)
+- Componentização e reutilização
+- Organização e clareza de código
+- Clean Code e DRY
+- Testes automatizados (unitários e e2e)
+- Deploy via Docker
 
+## Docker
 
-**_Codigo_**
-- O filtro e um componente independente to resto da tela (1 ponto);
-- O filtro permite que outros campos possam ser adicionados posteriormente (1 ponto);
-- O filtro devera implementar alguma forma de Gerenciamento de estado escalável (2 pontos);
-- O filtro deve ser testado, de preferencia com uma ferramenta e2e, como o Cypress (2 pontos);
+Todo o projeto está completamente dockerizado para facilitar a execução e desenvolvimento:
 
-**Total: 7 pontos**
+- Frontend e backend possuem seus próprios Dockerfiles
+- Os containers são orquestrados via Docker Compose
+- Configurações de rede isoladas entre os containers
+- Volumes persistentes para o banco de dados
 
-**_Pontos extras_**
+Para verificar os logs dos containers:
+```sh
+docker-compose logs -f frontend
+docker-compose logs -f backend
+```
 
-- Fazer o deploy publico da aplicacao em qualquer servico que aceite as imagens docker (1 ponto)
-- Adicionar testes (unitarios ou end-to-end) (1 pontos)
-- Uso do Typescript (1 ponto)
+---
 
-**Total: 3 pontos**
-
-### Criterios tecnicos
-
-Alem da avaliacao das funcionalidades do FE, tambem serao levados em consideracao aspectos tecnicos como:
-
-- Componentizacao:
-  - Criacao de componentes reutilizaveis
-- Organizacao
-  - Clareza e legibilidade do codigo
-  - Comentarios e documentacao
-  - Organizacao clara das pastas e arquivos
-- Principios
-  - Clean Code
-  - DRY
+> Projeto para avaliação técnica da Murabei Data Science.
