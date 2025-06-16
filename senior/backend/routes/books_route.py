@@ -15,9 +15,13 @@ def get_books():
     # Get the page and page_size parameters from the request arguments
     page = request.args.get('page', default=1, type=int)
     page_size = request.args.get('page_size', default=10, type=int)
+    title = request.args.get('title', default=None, type=str)
+    author = request.args.get('author', default=None, type=str)
+    subject = request.args.get('subject', default=None, type=str)
+
 
     # Call the get_all_books function with the page and page_size parameters
-    books = get_all_books(page=page, page_size=page_size)
+    books = get_all_books(page=page, page_size=page_size, author_slug=author, title=title, subject=subject)
 
     # Return the books as a JSON response
     return jsonify(books)

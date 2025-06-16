@@ -1,16 +1,56 @@
 import sqlite3
 
-def get_all_books(page=1, page_size=10):
+def get_all_books(page=1, page_size=10, author_slug=None, title=None, subject=None):
     conn = sqlite3.connect('db.sqlite')
     cursor = conn.cursor()
 
     # Calculate the offset based on the page number and page size
     offset = (page - 1) * page_size
+    
+    query = 'SELECT * FROM book'
+    meta_query = 'SELECT COUNT(*) FROM book'
+    conditions = []
+    params = []
 
-    # Execute a SELECT query with pagination
-    cursor.execute(f'SELECT * FROM book LIMIT {page_size} OFFSET {offset};')
+    if author_slug:
+        conditions.append('author_slug LIKE ?')
+        params.append(f'%{author_slug}%')
+    if title:
+        conditions.append('title LIKE ?')
+        params.append(f'%{title}%')
+    if subject:
+        conditions.append('subjects LIKE ?')
+        params.append(f'%{subject}%')
+    if conditions:
+        query += ' WHERE ' + ' AND '.join(conditions)
+        meta_query += ' WHERE ' + ' AND '.join(conditions)
+
+    if not conditions:
+        query += ' ORDER BY id'
+    else:
+        query += ' ORDER BY title'
+
+    query += ' LIMIT ? OFFSET ?;'
+
+    params.append(page_size)
+    params.append(offset)
+
+    # Execute the meta query to get the total count of books
+    cursor.execute(meta_query, params[:-2])
+    total_books = cursor.fetchone()[0]
+    # Calculate pagination metadata
+    pagination_metadata = {
+        'current_page': page,
+        'page_size': page_size,
+        'total_books': total_books,
+        'total_pages': (total_books + page_size - 1) // page_size,
+    }
+
+    # Execute the query to fetch books with pagination
+    cursor.execute(query, params)
+    # Fetch all books based on the query
+
     books = cursor.fetchall()
-
     # Convert the books data to a list of dictionaries
     book_list = []
     for book in books:
@@ -18,7 +58,7 @@ def get_all_books(page=1, page_size=10):
             'id': book[0],
             'title': book[1],
             'author': book[2],
-            'biography': book[4]
+            'biography': book[4],
         }
         book_list.append(book_dict)
 
@@ -26,7 +66,7 @@ def get_all_books(page=1, page_size=10):
     conn.close()
 
     # Return the books as a JSON response
-    return book_list
+    return { 'books': book_list, 'pagination_metadata': pagination_metadata }
 
 def get_books_by_author_name(author_slug):
     conn = sqlite3.connect('db.sqlite')
@@ -63,7 +103,6 @@ def get_books_by_subject():
     cursor = conn.cursor()
 
     # Execute a SELECT query to fetch all subjects, and the slug from the table subject
-
     cursor.execute("SELECT subjects FROM book;")
     subjects = cursor.fetchall()
 

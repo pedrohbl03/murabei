@@ -1,25 +1,28 @@
 import React from 'react'
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '../ui/pagination';
+import CustomPageLink from '../CustomPageLink';
 
 export interface IBookTablePaginationProps {
   currentPage: number;
   totalPages: number;
+  filterParams?: Record<string, string>;
 }
 
 export const BookTablePagination = ({
   currentPage,
   totalPages,
+  filterParams,
 }: IBookTablePaginationProps) => {
   return (
     <Pagination>
       <PaginationContent>
         <PaginationItem>
-          <PaginationPrevious href={`?page=${currentPage > 1 ? currentPage - 1 : currentPage}`} />
+          <CustomPageLink previous page={currentPage > 1 ? currentPage - 1 : currentPage} filterParams={filterParams} />
         </PaginationItem>
 
         {currentPage > 1 && (
           <PaginationItem>
-            <PaginationLink href={`?page=${1}`} > 1 </PaginationLink>
+            <CustomPageLink page={1} filterParams={filterParams}>1</CustomPageLink>
           </PaginationItem>
         )}
 
@@ -30,17 +33,16 @@ export const BookTablePagination = ({
         )}
 
         <PaginationItem>
-          <PaginationLink href={`?page=${currentPage}`} isActive >
+          <CustomPageLink page={currentPage} isActive filterParams={filterParams} >
             {currentPage}
-          </PaginationLink>
+          </CustomPageLink>
         </PaginationItem>
 
         {Array.from({ length: 3 }, (_, i) => {
           const pageNumber = currentPage + i + 1;
-          console.log('pageNumber', pageNumber);
           return pageNumber <= totalPages && pageNumber !== 1 ? (
             <PaginationItem key={pageNumber} >
-              <PaginationLink href={`?page=${pageNumber}`} > {pageNumber} </PaginationLink>
+              <CustomPageLink page={pageNumber} filterParams={filterParams}>{pageNumber}</CustomPageLink>
             </PaginationItem>
           ) : null;
         })}
@@ -51,16 +53,16 @@ export const BookTablePagination = ({
           </PaginationItem>
         )}
 
-        {currentPage < totalPages && (
+        {currentPage < totalPages && currentPage + 5 > 5 && (
           <PaginationItem>
-            <PaginationLink href={`?page=${totalPages}`} >
+            <CustomPageLink page={totalPages} filterParams={filterParams}>
               {totalPages}
-            </PaginationLink>
+            </CustomPageLink>
           </PaginationItem>
         )}
 
         <PaginationItem>
-          <PaginationNext href={`?page=${currentPage < totalPages ? currentPage + 1 : currentPage}`} />
+          <CustomPageLink next page={currentPage < totalPages ? currentPage + 1 : currentPage} filterParams={filterParams} />
         </PaginationItem>
       </PaginationContent>
     </Pagination>

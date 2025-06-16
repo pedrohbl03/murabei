@@ -15,10 +15,19 @@ import { BookTablePagination } from '../BookTablePagination';
 
 export interface BookListProps {
   page: string | number;
+  title?: string;
+  author?: string;
+  subject?: string;
 }
 
-export const BookList = ({ page }: BookListProps) => {
-  const response = use(getAllBooks(Number(page), 10));
+export const BookList = ({ page, title, author, subject }: BookListProps) => {
+  const response = use(getAllBooks({
+    page: Number(page) || 1,
+    limit: 10,
+    title: title || '',
+    author: author || '',
+    subject: subject || ''
+  }));
 
   if (!response.data) {
     Array.from({ length: 10 }).map((_, index) => (
@@ -80,6 +89,11 @@ export const BookList = ({ page }: BookListProps) => {
       <BookTablePagination
         currentPage={pagination_metadata.current_page}
         totalPages={pagination_metadata.total_pages}
+        filterParams={{
+          title: title || '',
+          author: author || '',
+          subject: subject || '',
+        }}
       />
     </div>
   )

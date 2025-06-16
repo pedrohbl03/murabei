@@ -3,9 +3,6 @@ import { Filter } from "@/components/Filter";
 import { PageProps } from "../../.next/types/app/page";
 
 export default async function Page(props: PageProps) {
-
-  console.log("Page props:", props.searchParams);
-
   return (
     <>
       <div className="mx-auto py-8">
@@ -19,21 +16,24 @@ export default async function Page(props: PageProps) {
             name="title"
             label="Título"
             placeholder="Digite o título do livro"
+            defaultValue={props.searchParams.title || ""}
           />
           <Filter.Item
             name="author"
             label="Autor"
             placeholder="Digite o nome do autor"
+            defaultValue={props.searchParams.author || ""}
           />
           <Filter.Item
-            name="genre"
+            name="subject"
             label="Gênero"
             placeholder="Selecione o gênero do livro"
+            defaultValue={props.searchParams.subject || ""}
           />
         </Filter.Root>
       </div>
 
-      <BookList page={props.searchParams?.page} />
+      <BookList {...props.searchParams} />
     </>
   );
 }
