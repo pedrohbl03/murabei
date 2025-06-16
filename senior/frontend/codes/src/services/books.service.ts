@@ -26,6 +26,5 @@ export const getAllBooks = async ({
     },
   });
 
-  console.log("getAllBooks response:", response);
   return response;
 };

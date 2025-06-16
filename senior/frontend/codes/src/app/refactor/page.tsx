@@ -16,11 +16,9 @@ export default function Home() {
     const fetchData = async () => {
       try {
         const response = await getAllBooks();
-        console.log(response.data);
         setDocuments(response.data.books);
         setLoading(false);
       } catch (err) {
-        console.log(err);
         setError(err instanceof Error ? err.message : 'An unknown error occurred');
         setLoading(false);
       }

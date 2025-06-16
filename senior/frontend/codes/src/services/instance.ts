@@ -9,7 +9,6 @@ export const instance = axios.create({
 
 instance.interceptors.response.use(
   (response) => {
-    console.log("API Response:", response);
     return response;
   },
   (error) => {
