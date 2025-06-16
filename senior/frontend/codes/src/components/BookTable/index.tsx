@@ -38,6 +38,7 @@ export const BookList = ({ page, title, author, subject }: BookListProps) => {
   }
 
   if (response.status !== 200) {
+    console.log(response);
     return (
       <div className="text-center py-32 flex flex-col items-center">
         <TbError404 className="mx-auto mb-2" size={48} />

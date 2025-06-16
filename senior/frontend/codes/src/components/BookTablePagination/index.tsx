@@ -1,5 +1,5 @@
 import React from 'react'
-import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '../ui/pagination';
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem } from '../ui/pagination';
 import CustomPageLink from '../CustomPageLink';
 
 export interface IBookTablePaginationProps {
